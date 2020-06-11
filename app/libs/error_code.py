@@ -9,7 +9,7 @@ class Success(APIException):
 
 class DeleteSuccess(Success):
     code = 202
-    error_code = -1
+    error_code = 0
 
 
 class UsernameFailed(APIException):

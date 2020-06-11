@@ -65,14 +65,32 @@ class LoginForm(BaseForm):
     secret = StringField(validators=[DataRequired()])
 
 
+class MenuForm(BaseForm):
+    menu_name = StringField(validators=[DataRequired()])
+    en_name = StringField(validators=[DataRequired()])
+
+
+class SubmenuForm(BaseForm):
+    id = IntegerField()
+    name = StringField(validators=[DataRequired()])
+    path = StringField(validators=[DataRequired()])
+    pic = StringField(validators=[DataRequired()])
+    menu_id = IntegerField(validators=[DataRequired()])
+    description = StringField(validators=[DataRequired()])
+    official_doc = StringField(validators=[DataRequired()])
+    status = IntegerField(validators=[DataRequired()])
+
+
 class ArticleForm(BaseForm):
     id = IntegerField()
-    title = StringField()
+    title = StringField(validators=[DataRequired()])
     author = StringField()
-    content = StringField(validators=[DataRequired()])
-    user_id = IntegerField()
-    status = IntegerField()
     create_time = StringField()
+    content = StringField(validators=[DataRequired()])
+    column_id = IntegerField(validators=[DataRequired()])
+    user_id = IntegerField()
+    recommend = IntegerField()
+    status = IntegerField()
 
 
 class UserForm(BaseForm):

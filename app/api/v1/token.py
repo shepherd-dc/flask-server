@@ -49,7 +49,7 @@ def get_token_info():
         'create_at': time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(data[1]['iat'])),
         'expire_in': datetime.datetime.utcfromtimestamp(data[1]['exp']).strftime('%Y-%m-%d %H:%M:%S')
     }
-    return jsonify(r)
+    return restful_json(r)
 
 
 def generate_auth_token(uid, nickname, ac_type, scope=None, expiration=7200):

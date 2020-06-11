@@ -8,7 +8,7 @@ with app.app_context():
     with db.auto_commit():
         # 创建一个超级管理员
         user = User()
-        user.nickname = 'Admin'
+        user.nickname = 'admin'
         user.password = '123456'
         user.email = 'shepherd_dc@aliyun.com'
         user.auth = 2
