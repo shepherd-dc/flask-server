@@ -72,7 +72,8 @@ class MenuForm(BaseForm):
 
 class SubmenuForm(BaseForm):
     id = IntegerField()
-    name = StringField(validators=[DataRequired()])
+    name_zh = StringField(validators=[DataRequired()])
+    name_en = StringField(validators=[DataRequired()])
     path = StringField(validators=[DataRequired()])
     pic = StringField(validators=[DataRequired()])
     menu_id = IntegerField(validators=[DataRequired()])

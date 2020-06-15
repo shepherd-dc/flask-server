@@ -89,7 +89,7 @@ def publish_article():
             article.author = form.author.data
             article.content = form.content.data
             article.column_id = form.column_id.data
-            article.column_name = column.name
+            article.column_name = column.name_zh
             article.menu_id = column.menu_id
             article.en_name = column.menu.en_name
             article.menu_name = column.menu.menu_name

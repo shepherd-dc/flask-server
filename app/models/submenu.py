@@ -8,7 +8,8 @@ class Submenu(Base):
     __tablename__ = 'submenu'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String(50), nullable=False)
+    name_zh = Column(String(50), nullable=False)
+    name_en = Column(String(50), nullable=False)
     menu_name = Column(String(50))
     path = Column(String(50), nullable=False)
     pic = Column(String(512), nullable=False)
@@ -18,4 +19,5 @@ class Submenu(Base):
 
     @orm.reconstructor
     def __init__(self):
-        self.fields = ['id', 'name', 'path', 'pic', 'menu_name', 'menu_id', 'description', 'official_doc', 'status', 'create_time']
+        self.fields = ['id', 'name_zh', 'name_en', 'path', 'pic', 'menu_name', 'menu_id',
+                       'description', 'official_doc', 'status', 'create_time']

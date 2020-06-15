@@ -100,8 +100,9 @@ def get_submenu():
     if status == 1:
         submenus = submenus.filter(Submenu.status == 1)
 
+    # or_(User.nickname == form.account.data, User.email == form.account.data)
     if name:
-        submenus = submenus.filter(Submenu.name.like('%' + name + '%'))
+        submenus = submenus.filter(or_(Submenu.name_zh.like('%' + name + '%'), Submenu.name_en.like('%' + name + '%')))
 
     if menu_id:
         submenus = submenus.filter(Submenu.menu_id == menu_id)
@@ -117,7 +118,7 @@ def get_submenu():
 
 @api.route('/submenu/<name>')
 def get_submenu_detail(name):
-    submenu =Submenu.query.filter_by(name=name).first_or_404()
+    submenu = Submenu.query.filter_by(name_en=name).first_or_404()
     return restful_json(submenu)
 
 @api.route('/submenu/save', methods=['POST'])
@@ -130,7 +131,8 @@ def save_submenu():
     if id:
         with db.auto_commit():
             submenu = Submenu.query.get(id)
-            submenu.name = form.name.data
+            submenu.name_zh = form.name_zh.data
+            submenu.name_en = form.name_en.data
             submenu.path = form.path.data
             submenu.pic = form.pic.data
             submenu.menu_id = form.menu_id.data
@@ -142,7 +144,8 @@ def save_submenu():
 
     with db.auto_commit():
         submenu = Submenu()
-        submenu.name = form.name.data
+        submenu.name_zh = form.name_zh.data
+        submenu.name_en = form.name_en.data
         submenu.path = form.path.data
         submenu.pic = form.pic.data
         submenu.menu_id = form.menu_id.data
