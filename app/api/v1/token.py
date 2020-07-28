@@ -1,9 +1,11 @@
 import time
 
 import datetime
-from flask import current_app, jsonify, request
+
+from flask import current_app, request
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer, SignatureExpired, BadSignature
 
+from app.libs.des import PyDES3
 from app.libs.enums import ClientTypeEnum
 from app.libs.error_code import AuthFailed
 from app.libs.redprint import Redprint
@@ -15,7 +17,7 @@ api = Redprint('token')
 
 
 @api.route('', methods=['POST'])
-def get_token():
+def grant_token():
     form = ClientForm().validate_for_api()
     promise = {
         ClientTypeEnum.USER_EMAIL: User.verify
@@ -28,6 +30,22 @@ def get_token():
         'token': token.decode('ascii')
     }
     return restful_json(t), 201
+
+
+@api.route('/code', methods=['GET'])
+def grant_public_key():
+    key = PyDES3.des_key
+    return restful_json(key)
+
+@api.route('/decode', methods=['POST'])
+def decode_data():
+    params = request.get_json()
+    data = params['data']
+    decode_data = PyDES3().decrypt(data)
+    return restful_json({
+        "raw": data,
+        "decode": decode_data
+    })
 
 
 @api.route('/secret', methods=['POST'])
