@@ -4,6 +4,7 @@ from flask import request, session, jsonify
 from flask_login import login_user
 from sqlalchemy import or_
 
+from app.libs.des import PyDES3
 from app.libs.enums import ClientTypeEnum
 from app.libs.error_code import Success, LoginFailed
 from app.libs.redprint import Redprint
@@ -30,9 +31,9 @@ def __register_user_by_email():
     form = UserEmailForm().validate_for_api()
     with db.auto_commit():
         user = User()
-        user.nickname = form.nickname.data
-        user.email = form.account.data
-        user.password = form.secret.data
+        user.nickname = PyDES3().decrypt(form.nickname.data)
+        user.email = PyDES3().decrypt(form.account.data)
+        user.password = PyDES3().decrypt(form.secret.data)
         user.create_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
         db.session.add(user)
 

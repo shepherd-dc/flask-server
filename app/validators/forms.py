@@ -2,6 +2,7 @@ from flask_wtf.file import FileField, FileRequired, FileAllowed
 from wtforms import StringField, IntegerField, SubmitField
 from wtforms.validators import DataRequired, length, Email, Regexp, ValidationError
 
+from app.libs.des import PyDES3
 from app.libs.enums import ClientTypeEnum
 from app.models.user import User
 from app.validators.base import BaseForm
@@ -23,29 +24,32 @@ class ClientForm(BaseForm):
 
 
 class UserEmailForm(ClientForm):
-    account = StringField(validators=[
-        Email(message='邮箱格式不正确')
-    ])
+    # account = StringField(validators=[
+    #     Email(message='邮箱格式不正确')
+    # ])
     secret = StringField(validators=[
         DataRequired(),
-        Regexp(r'^[A-Za-z0-9_*&$#@]{6,22}$')
+        Regexp(r'^[A-Za-z0-9_*&$#@=]{6,22}$')
     ])
     nickname = StringField(validators=[DataRequired(),
                                        length(min=2, max=22)])
 
     def validate_account(self, value):
-        if User.query.filter_by(email=value.data).first():
+        email = PyDES3().decrypt(value.data)
+        if User.query.filter_by(email=email).first():
             raise ValidationError(message='邮箱已注册')
 
     def validate_nickname(self, value):
-        if User.query.filter_by(nickname=value.data).first():
+        nickname = PyDES3().decrypt(value.data)
+        if User.query.filter_by(nickname=nickname).first():
             raise ValidationError(message='昵称已注册')
 
 
 class EmailForm(BaseForm):
-    email = StringField(validators=[
-        Email(message='邮箱格式不正确')
-    ])
+    # email = StringField(validators=[
+    #     Email(message='邮箱格式不正确')
+    # ])
+    email = StringField(validators=[DataRequired(message='邮箱不能为空')])
 
 
 class NicknameForm(BaseForm):
@@ -99,7 +103,8 @@ class UserForm(BaseForm):
     auth = IntegerField(validators=[DataRequired()])
     nickname = StringField(validators=[DataRequired()])
     email = StringField(validators=[
-        Email(message='邮箱格式不正确')
+        DataRequired(),
+        # Email(message='邮箱格式不正确')
     ])
     password = StringField(validators=[DataRequired()])
     create_time = StringField()

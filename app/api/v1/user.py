@@ -5,6 +5,7 @@ import time
 from flask import jsonify, g, request
 from wtforms.validators import email
 
+from app.libs.des import PyDES3
 from app.libs.error_code import DeleteSuccess, Success
 from app.libs.redprint import Redprint
 from app.libs.restful_json import restful_json
@@ -74,7 +75,7 @@ def super_get_user_list():
 @api.route('/email', methods=['POST'])
 def get_email():
     form = EmailForm().validate_for_api()
-    email = form.email.data
+    email = PyDES3().decrypt(form.email.data)
     user = User.query.filter_by(email=email).first()
     if user:
         data = {
@@ -89,7 +90,7 @@ def get_email():
 @api.route('/nickname', methods=['POST'])
 def get_nickname():
     form = NicknameForm().validate_for_api()
-    nickname = form.nickname.data
+    nickname = PyDES3().decrypt(form.nickname.data)
     user = User.query.filter_by(nickname=nickname).first()
     if user:
         data = {
@@ -105,8 +106,8 @@ def get_nickname():
 @auth.login_required
 def publish_article():
     form = UserForm().validate_for_api()
-    email = form.email.data
-    nickname = form.nickname.data
+    email = PyDES3().decrypt(form.email.data)
+    nickname = PyDES3().decrypt(form.nickname.data)
 
     user_nickname = User.query.filter_by(nickname=nickname).first()
     user_email = User.query.filter_by(email=email).first()
@@ -129,11 +130,11 @@ def publish_article():
         user = User()
         user.nickname = nickname
         user.email = email
-        user.auth =form.auth.data
-        user.password = form.password.data
+        user.auth = form.auth.data
+        user.password = PyDES3().decrypt(form.password.data)
         user.create_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
         db.session.add(user)
-    return restful_json(user)
+    return Success()
 
 
 @api.route('/edit', methods=['PUT'])

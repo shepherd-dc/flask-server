@@ -1,3 +1,4 @@
+import base64
 import time
 
 import datetime
@@ -19,15 +20,18 @@ api = Redprint('token')
 @api.route('', methods=['POST'])
 def grant_token():
     form = ClientForm().validate_for_api()
+    account = PyDES3().decrypt(form.account.data)
+    secret = PyDES3().decrypt(form.secret.data)
     promise = {
         ClientTypeEnum.USER_EMAIL: User.verify
     }
-    identity = promise[form.type.data](form.account.data, form.secret.data)
+    identity = promise[form.type.data](account, secret)
 
     expiration = current_app.config['TOKEN_EXPIRATION']
     token = generate_auth_token(identity['uid'], identity['nickname'], form.type.data, identity['scope'], expiration)
     t = {
-        'token': token.decode('ascii')
+        'token': token.decode('ascii'),
+        'nickname': account
     }
     return restful_json(t), 201
 
@@ -36,6 +40,12 @@ def grant_token():
 def grant_public_key():
     key = PyDES3.des_key
     return restful_json(key)
+
+@api.route('/code/key', methods=['GET'])
+def grant_base64_key():
+    key = PyDES3.des_key
+    base64_key = base64.b64encode(key.encode()).decode()
+    return restful_json(base64_key)
 
 @api.route('/decode', methods=['POST'])
 def decode_data():
@@ -61,11 +71,11 @@ def get_token_info():
         raise AuthFailed(msg='token is invalid', error_code=1002)
 
     r = {
-        'uid': data[0]['uid'],
-        'nickname': data[0]['nickname'],
-        'scope': data[0]['scope'],
-        'create_at': time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(data[1]['iat'])),
-        'expire_in': datetime.datetime.utcfromtimestamp(data[1]['exp']).strftime('%Y-%m-%d %H:%M:%S')
+        # 'uid': data[0]['uid'],
+        'nickname': PyDES3().encrypt(data[0]['nickname']),
+        'scope': PyDES3().encrypt(data[0]['scope']),
+        'create_at': PyDES3().encrypt(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(data[1]['iat']))),
+        'expire_in': PyDES3().encrypt(datetime.datetime.utcfromtimestamp(data[1]['exp']).strftime('%Y-%m-%d %H:%M:%S'))
     }
     return restful_json(r)
 
