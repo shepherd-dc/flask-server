@@ -115,3 +115,25 @@ class UploadForm(BaseForm):
     photo = FileField('Upload Image', validators=[FileRequired(), FileAllowed(['jpg','jpeg','png','gif'])])
     submit = SubmitField()
 
+
+class CommentForm(BaseForm):
+    id = IntegerField()
+    from_uid = IntegerField()
+    content = StringField(validators=[DataRequired()])
+    topic_id = IntegerField(validators=[DataRequired()])
+    topic_type = StringField()
+    status = IntegerField()
+    create_time = StringField()
+
+
+class ReplyForm(BaseForm):
+    id = IntegerField()
+    from_uid = IntegerField(validators=[DataRequired()])
+    to_uid = IntegerField(validators=[DataRequired()])
+    to_name = StringField(validators=[DataRequired()])
+    content = StringField(validators=[DataRequired()])
+    comment_id = IntegerField(validators=[DataRequired()])
+    reply_id = IntegerField(validators=[DataRequired()])
+    reply_type = StringField()
+    status = IntegerField()
+    create_time = StringField()

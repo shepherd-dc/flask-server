@@ -17,8 +17,10 @@ class Article(Base):
     recommend = Column(Integer, nullable=False, default=0)
     user = relationship('User')
     user_id = Column(Integer, ForeignKey('user.id'))
+    # comments = relationship('Comment', backref='article')
 
     @orm.reconstructor
     def __init__(self):
         self.fields = ['id', 'title', 'author', 'content', 'user_id', 'status',
+                       # 'comments',
                        'column_id', 'column_name', 'menu_id', 'menu_name', 'en_name', 'create_time', 'recommend']

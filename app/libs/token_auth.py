@@ -9,7 +9,7 @@ from app.libs.scope import is_in_scope
 
 auth = HTTPBasicAuth()
 
-User = namedtuple('User', ['uid', 'ac_type', 'scope'])
+User = namedtuple('User', ['uid', 'nickname', 'ac_type', 'scope'])
 
 
 @auth.verify_password
@@ -32,6 +32,7 @@ def verify_auth_token(token):
         raise AuthFailed(msg='token is expired', error_code=1003)
 
     uid = data['uid']
+    nickname = data['nickname']
     ac_type = data['type']
     scope = data['scope']
 
@@ -39,4 +40,4 @@ def verify_auth_token(token):
     if not allow:
         raise Forbidden()
 
-    return User(uid, ac_type, scope)
+    return User(uid, nickname, ac_type, scope)
