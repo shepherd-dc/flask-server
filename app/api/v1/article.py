@@ -100,6 +100,7 @@ def publish_article():
                 article.user_id = user_id
             else:
                 article.user_id = g.user.uid
+                article.user_name = g.user.nickname
 
             if create_time:
                 article.create_time = create_time
