@@ -1,6 +1,8 @@
+import json
 import time
 
-from flask import request, g
+import requests
+from flask import request, g, url_for
 from sqlalchemy.orm import aliased
 
 from app.libs.error_code import Success, ParameterException
@@ -60,13 +62,13 @@ def get_comments(aid):
     return restful_json(data)
 
 
-@api.route('/reply', methods=['GET'])
-def reply_list():
+@api.route('/reply/<int:rid>', methods=['GET'])
+def reply_list(rid):
     page_index = int(request.args.get('page', 1))
     page_size = int(request.args.get('limit', 10))
     order = int(request.args.get('order', 0))
 
-    replies = Reply.query
+    replies = Reply.query.filter_by(reply_id=rid)
 
     if order and order == 1:
         replies = replies.order_by(Reply.create_time.asc())
@@ -131,7 +133,6 @@ def submit_comment():
 def submit_reply():
     form = ReplyForm().validate_for_api()
     reply_type = form.reply_type.data
-    comment_id = form.comment_id.data
     reply_id = form.reply_id.data
 
     with db.auto_commit():
@@ -142,20 +143,16 @@ def submit_reply():
         reply.to_name = form.to_name.data
         reply.from_uid = g.user.uid
         reply.from_name = g.user.nickname
-        reply.reply_type = reply_type
+        reply.comment_id = form.comment_id.data
         reply.topic_id = form.topic_id.data
         reply.topic_type = form.topic_type.data
-        if reply_type == 'comment':
-            if comment_id:
-                reply.comment_id = form.comment_id.data
-            else:
-                return ParameterException(msg='comment_id is required')
-        elif reply_type == 'reply':
+        reply.reply_type = reply_type
+        if reply_type == 'reply':
             if reply_id:
                 reply.reply_id = form.reply_id.data
             else:
                 return ParameterException(msg='reply_id is required')
-        else:
+        elif reply_type != 'comment':
             return ParameterException(msg='reply_type is invalid')
 
         db.session.add(reply)

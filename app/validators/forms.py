@@ -129,7 +129,7 @@ class ReplyForm(BaseForm):
     to_uid = IntegerField(validators=[DataRequired()])
     to_name = StringField(validators=[DataRequired()])
     content = StringField(validators=[DataRequired()])
-    comment_id = IntegerField()
+    comment_id = IntegerField(validators=[DataRequired()])
     topic_id = IntegerField(validators=[DataRequired()])
     topic_type = StringField()
     reply_id = IntegerField()
