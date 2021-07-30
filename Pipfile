@@ -5,7 +5,7 @@ name = "pypi"
 
 [packages]
 cymysql = "==0.9.12"
-flask-cors = "==3.0.6"
+flask-cors = "==3.0.9"
 flask-httpauth = "==3.2.4"
 flask-wtf = "==0.14.2"
 requests = "==2.19.1"
