@@ -134,3 +134,13 @@ class ReplyForm(BaseForm):
     topic_type = StringField()
     reply_id = IntegerField()
     reply_type = StringField(validators=[DataRequired()])
+
+
+class LikeForm(BaseForm):
+    id = IntegerField()
+    type_id = IntegerField(validators=[DataRequired()])
+
+
+class starForm(BaseForm):
+    id = IntegerField()
+    type_id = IntegerField(validators=[DataRequired()])

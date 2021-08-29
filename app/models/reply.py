@@ -17,8 +17,9 @@ class Reply(Base):
     from_name = Column(String(30))
     to_uid = Column(Integer, nullable=False)
     to_name = Column(String(30))
+    likes = Column(Integer, nullable=False, default=0)
 
     @orm.reconstructor
     def __init__(self):
         self.fields = ['id', 'topic_id', 'topic_type', 'comment_id', 'reply_id', 'reply_type', 'content',
-                       'from_name', 'from_uid', 'to_uid', 'to_name', 'create_time']
+                       'from_name', 'from_uid', 'to_uid', 'to_name', 'create_time', 'likes']

@@ -1,3 +1,4 @@
+import datetime
 from collections import namedtuple
 
 from flask import current_app, g, request
@@ -13,7 +14,7 @@ User = namedtuple('User', ['uid', 'nickname', 'ac_type', 'scope'])
 
 
 @auth.verify_password
-def verify_password(account, password):
+def verify_password(account, password=''):
     user_info = verify_auth_token(account)
     if not user_info:
         return False
@@ -41,3 +42,9 @@ def verify_auth_token(token):
         raise Forbidden()
 
     return User(uid, nickname, ac_type, scope)
+
+
+def decode_token_uid(token):
+    """解密令牌信息"""
+    info = verify_auth_token(token)
+    return info.uid

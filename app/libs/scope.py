@@ -29,7 +29,7 @@ class UserScope(Scope):
 
 class AdminScope(Scope):
     # allow_api = ['v1.user/super_get_user', 'v1.user/super_delete_user']
-    allow_module = ['v1.user', 'v1.gift', 'v1.menu', 'v1.article', 'v1.comment']
+    allow_module = ['v1.user', 'v1.gift', 'v1.menu', 'v1.article', 'v1.comment', 'v1.like', 'v1.star']
 
     def __init__(self):
         # self + UserScope()

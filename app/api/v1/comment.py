@@ -39,8 +39,8 @@ def comment_list():
     return restful_json(data)
 
 
-@api.route('/<int:aid>', methods=['GET'])
-def get_comments(aid):
+@api.route('/list/<int:aid>', methods=['GET'])
+def get_comments_list(aid):
     page_index = int(request.args.get('page', 1))
     page_size = int(request.args.get('limit', 10))
     order = int(request.args.get('order', 0))
@@ -62,7 +62,19 @@ def get_comments(aid):
     return restful_json(data)
 
 
-@api.route('/reply/<int:rid>', methods=['GET'])
+@api.route('/detail/<int:cid>', methods=['GET'])
+def get_comment(cid):
+    comment = Comment.query.filter_by(id=cid).first_or_404()
+    return restful_json(comment)
+
+
+@api.route('/reply/detail/<int:rid>', methods=['GET'])
+def get_reply(rid):
+    reply = Reply.query.filter_by(id=rid).first_or_404()
+    return restful_json(reply)
+
+
+@api.route('/reply/list/<int:rid>', methods=['GET'])
 def reply_list(rid):
     page_index = int(request.args.get('page', 1))
     page_size = int(request.args.get('limit', 10))
