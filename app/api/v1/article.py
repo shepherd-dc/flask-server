@@ -63,6 +63,16 @@ def get_article(aid):
     return restful_json(article)
 
 
+@api.route('/view/<int:aid>', methods=['GET'])
+def view_article(aid):
+
+    with db.auto_commit():
+        article = Article.query.get(aid)
+        article.views += 1
+
+    return Success()
+
+
 @api.route('/publish', methods=['POST'])
 @auth.login_required
 def publish_article():
