@@ -22,9 +22,10 @@ class Article(Base):
     user_id = Column(Integer, ForeignKey('user.id'))
     user_name = Column(String(30))
     # comments = relationship('Comment', backref='article')
+    comments = relationship('Comment')
 
     @orm.reconstructor
     def __init__(self):
         self.fields = ['id', 'title', 'author', 'content', 'user_id', 'user_name', 'status', 'create_time',
-                       # 'comments',
+                       'comments',
                        'column_id', 'column_name', 'menu_id', 'menu_name', 'en_name', 'recommend', 'likes', 'stars', 'views']

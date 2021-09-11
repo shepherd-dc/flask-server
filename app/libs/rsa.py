@@ -11,7 +11,7 @@ class RsaKey:
     public_key_bytes = public_key.save_pkcs1()
 
     # pem格式解码、编码
-    public_key_str = public_key_bytes.decode()
+    public_key_str = public_key_bytes.decode
     encode_public_key_bytes = public_key_str.encode()
 
     # base64格式key

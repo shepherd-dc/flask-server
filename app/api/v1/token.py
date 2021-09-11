@@ -8,7 +8,7 @@ from itsdangerous import TimedJSONWebSignatureSerializer as Serializer, Signatur
 
 from app.libs.des import PyDES3
 from app.libs.enums import ClientTypeEnum
-from app.libs.error_code import AuthFailed
+from app.libs.error_code import TokenInvalid
 from app.libs.redprint import Redprint
 from app.libs.restful_json import restful_json
 from app.models.user import User
@@ -66,9 +66,9 @@ def get_token_info():
     try:
         data = s.loads(form.token.data, return_header=True)
     except SignatureExpired:
-        raise AuthFailed(msg='token is expired', error_code=1003)
+        raise TokenInvalid(msg='token is expired', error_code=1003)
     except BadSignature:
-        raise AuthFailed(msg='token is invalid', error_code=1002)
+        raise TokenInvalid(msg='token is invalid', error_code=1002)
 
     r = {
         # 'uid': data[0]['uid'],

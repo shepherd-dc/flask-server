@@ -56,6 +56,12 @@ class NotFound(APIException):
     error_code = 1001
 
 
+class TokenInvalid(APIException):
+    code = 200
+    msg = 'token is invalid'
+    error_code = 1002
+
+
 class AuthFailed(APIException):
     code = 401
     error_code = 1005
