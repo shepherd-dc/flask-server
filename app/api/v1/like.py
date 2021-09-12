@@ -28,6 +28,40 @@ def get_article_like(aid):
     return restful_json({"is_liked": is_liked})
 
 
+@api.route('/article/comments/user/<int:aid>', methods=['GET'])
+@auth.login_required
+def get_user_comments_likes(aid):
+    comments_likes = CommentLike.query.join(
+        Comment,
+        CommentLike.type_id == Comment.id
+    ).filter(
+        Comment.topic_id == aid,
+        CommentLike.user_id ==  g.user.uid
+    ).all()
+
+    for like in comments_likes:
+        like.hide('id', 'create_time', 'status', 'user_id')
+
+    return restful_json(comments_likes)
+
+
+@api.route('/article/replies/user/<int:aid>', methods=['GET'])
+@auth.login_required
+def get_user_replies_likes(aid):
+    replies_likes = ReplyLike.query.join(
+        Reply,
+        ReplyLike.type_id == Reply.id
+    ).filter(
+        Reply.topic_id == aid,
+        ReplyLike.user_id ==  g.user.uid
+    ).all()
+
+    for like in replies_likes:
+        like.hide('id', 'create_time', 'status', 'user_id')
+
+    return restful_json(replies_likes)
+
+
 @api.route('/article', methods=['POST'])
 @auth.login_required
 def submit_article_like():
