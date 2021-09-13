@@ -30,10 +30,16 @@ class LoginFailed(APIException):
     error_code = 1003
 
 
-class ServerException(APIException):
-    code = 500
-    msg = 'sorry, we made a mistake (*￣︶￣)!'
-    error_code = 999
+class TokenInvalid(APIException):
+    code = 202
+    msg = 'token is invalid'
+    error_code = 1003
+
+
+class DuplicateLike(APIException):
+    code = 202
+    error_code = 2003
+    msg = 'you have already liked'
 
 
 class ClientTypeError(APIException):
@@ -54,12 +60,6 @@ class NotFound(APIException):
     code = 404
     msg = 'the resource are not found O__O...'
     error_code = 1001
-
-
-class TokenInvalid(APIException):
-    code = 200
-    msg = 'token is invalid'
-    error_code = 1002
 
 
 class AuthFailed(APIException):
@@ -86,6 +86,7 @@ class FileSizeLimit(APIException):
     msg = '附件大小不能超过12M'
 
 
-
-
-
+class ServerException(APIException):
+    code = 500
+    msg = 'sorry, we made a mistake (*￣︶￣)!'
+    error_code = 999

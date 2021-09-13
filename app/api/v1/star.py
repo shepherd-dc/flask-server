@@ -1,3 +1,4 @@
+import base64
 import time
 
 from flask import g, request
@@ -24,6 +25,24 @@ def get_article_star(aid):
         is_stared = 1
 
     return restful_json({"is_stared": is_stared})
+
+
+@api.route('/articles/user', methods=['GET'])
+@auth.login_required
+def get_user_articles_likes():
+    list = request.values.get('list', '')
+    result = []
+
+    if list:
+        list = base64.b64decode(list).decode().split(',')
+        list = [int(l) for l in list]
+
+        result = ArticleStar.query.filter(ArticleStar.type_id.in_(list), ArticleStar.user_id == g.user.uid).all()
+
+        for like in result:
+            like.hide('id', 'create_time', 'status', 'user_id')
+
+    return restful_json(result)
 
 
 @api.route('/article', methods=['POST'])
