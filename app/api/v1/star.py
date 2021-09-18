@@ -39,8 +39,7 @@ def get_user_articles_likes():
 
         result = ArticleStar.query.filter(ArticleStar.type_id.in_(list), ArticleStar.user_id == g.user.uid).all()
 
-        for like in result:
-            like.hide('id', 'create_time', 'status', 'user_id')
+        [like.hide('id', 'create_time', 'status', 'user_id') for like in result]
 
     return restful_json(result)
 

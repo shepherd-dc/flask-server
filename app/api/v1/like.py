@@ -41,15 +41,14 @@ def get_user_articles_likes():
 
         result = ArticleLike.query.filter(ArticleLike.type_id.in_(list), ArticleLike.user_id == g.user.uid).all()
 
-        for like in result:
-            like.hide('id', 'create_time', 'status', 'user_id')
+        [like.hide('id', 'create_time', 'status', 'user_id') for like in result]
 
     return restful_json(result)
 
 
 @api.route('/article/comments/user/<int:aid>', methods=['GET'])
 @auth.login_required
-def get_user_comments_likes(aid):
+def get_user_article_comments_likes(aid):
     comments_likes = CommentLike.query.join(
         Comment,
         CommentLike.type_id == Comment.id
@@ -58,15 +57,14 @@ def get_user_comments_likes(aid):
         CommentLike.user_id ==  g.user.uid
     ).all()
 
-    for like in comments_likes:
-        like.hide('id', 'create_time', 'status', 'user_id')
+    [like.hide('id', 'create_time', 'status', 'user_id') for like in comments_likes]
 
     return restful_json(comments_likes)
 
 
 @api.route('/article/replies/user/<int:aid>', methods=['GET'])
 @auth.login_required
-def get_user_replies_likes(aid):
+def get_user_article_replies_likes(aid):
     replies_likes = ReplyLike.query.join(
         Reply,
         ReplyLike.type_id == Reply.id
@@ -75,8 +73,7 @@ def get_user_replies_likes(aid):
         ReplyLike.user_id ==  g.user.uid
     ).all()
 
-    for like in replies_likes:
-        like.hide('id', 'create_time', 'status', 'user_id')
+    [like.hide('id', 'create_time', 'status', 'user_id') for like in replies_likes]
 
     return restful_json(replies_likes)
 
@@ -105,6 +102,23 @@ def submit_article_like():
             article.likes += 1
 
         return Success()
+
+
+@api.route('/comments/user', methods=['GET'])
+@auth.login_required
+def get_user_comments_likes():
+    list = request.values.get('list', '')
+    result = []
+
+    if list:
+        list = base64.b64decode(list).decode().split(',')
+        list = [int(l) for l in list]
+
+        result = CommentLike.query.filter(CommentLike.type_id.in_(list), CommentLike.user_id == g.user.uid).all()
+
+        [like.hide('id', 'create_time', 'status', 'user_id') for like in result]
+
+    return restful_json(result)
 
 
 @api.route('/comment/<int:cid>', methods=['GET'])
@@ -143,6 +157,23 @@ def submit_comment_like():
             comment.likes += 1
 
         return Success()
+
+
+@api.route('/replies/user', methods=['GET'])
+@auth.login_required
+def get_user_replies_likes():
+    list = request.values.get('list', '')
+    result = []
+
+    if list:
+        list = base64.b64decode(list).decode().split(',')
+        list = [int(l) for l in list]
+
+        result = ReplyLike.query.filter(ReplyLike.type_id.in_(list), ReplyLike.user_id == g.user.uid).all()
+
+        [like.hide('id', 'create_time', 'status', 'user_id') for like in result]
+
+    return restful_json(result)
 
 
 @api.route('/reply/<int:rid>', methods=['GET'])

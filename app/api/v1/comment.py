@@ -9,6 +9,8 @@ from app.libs.error_code import Success, ParameterException
 from app.libs.redprint import Redprint
 from app.libs.restful_json import restful_json
 from app.libs.token_auth import auth
+from app.models import reply
+from app.models.article import Article
 from app.models.base import db
 from app.models.comment import Comment
 from app.models.reply import Reply
@@ -127,15 +129,20 @@ def replies_list(aid):
 @auth.login_required
 def submit_comment():
     form = CommentForm().validate_for_api()
+    topic_id = form.topic_id.data
 
     with db.auto_commit():
         comment = Comment()
-        comment.topic_id = form.topic_id.data
+        comment.topic_id = topic_id
         comment.content = form.content.data
         comment.create_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
         comment.from_uid = g.user.uid
         comment.from_name = g.user.nickname
         db.session.add(comment)
+
+    with db.auto_commit():
+        article = Article.query.get(topic_id)
+        article.comments_num += 1
 
     return Success()
 

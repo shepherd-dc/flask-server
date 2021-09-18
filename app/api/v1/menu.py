@@ -27,9 +27,8 @@ def get_menu():
         menus = menus.filter_by(status=1).all()
 
     if nav=='nav':
-        for menu in menus:
-            for submenu in menu.submenu:
-                submenu.hide('pic', 'description', 'official_doc', 'status')
+        [submenu.hide('pic', 'description', 'official_doc', 'status') for menu in menus for submenu in menu.submenu ]
+
     elif nav and nav != 'nav':
         return ParameterException()
 
