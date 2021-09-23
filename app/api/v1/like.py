@@ -97,7 +97,6 @@ def submit_article_like():
             like.user_id = g.user.uid
             db.session.add(like)
 
-        with db.auto_commit():
             article = Article.query.get(type_id)
             article.likes += 1
 
@@ -152,7 +151,6 @@ def submit_comment_like():
             like.user_id = g.user.uid
             db.session.add(like)
 
-        with db.auto_commit():
             comment = Comment.query.get(type_id)
             comment.likes += 1
 
@@ -207,7 +205,6 @@ def submit_reply_like():
             like.user_id = g.user.uid
             db.session.add(like)
 
-        with db.auto_commit():
             reply = Reply.query.get(type_id)
             reply.likes += 1
 

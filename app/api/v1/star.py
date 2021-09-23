@@ -57,7 +57,6 @@ def submit_star():
         star.user_id = g.user.uid
         db.session.add(star)
 
-    with db.auto_commit():
         article = Article.query.get(type_id)
         article.stars += 1
 
@@ -74,7 +73,6 @@ def cancel_star():
         star = ArticleStar.query.filter(ArticleStar.type_id == type_id, ArticleStar.user_id == g.user.uid).first()
         db.session.delete(star)
 
-    with db.auto_commit():
         article = Article.query.get(type_id)
         article.stars -= 1
 

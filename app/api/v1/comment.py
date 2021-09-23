@@ -140,7 +140,6 @@ def submit_comment():
         comment.from_name = g.user.nickname
         db.session.add(comment)
 
-    with db.auto_commit():
         article = Article.query.get(topic_id)
         article.comments_num += 1
 
