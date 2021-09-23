@@ -10,7 +10,10 @@ from app.libs.error_code import DeleteSuccess, Success
 from app.libs.redprint import Redprint
 from app.libs.restful_json import restful_json
 from app.libs.token_auth import auth
+from app.models.article import Article
 from app.models.base import db
+from app.models.like import ArticleLike
+from app.models.star import ArticleStar
 
 from app.models.user import User
 
@@ -26,6 +29,28 @@ def get_user():
     uid = g.user.uid
     user = User.query.filter_by(id=uid).first_or_404()
     return jsonify(user)
+
+
+@api.route('/statistics', methods=['GET'])
+@auth.login_required
+def get_user_statistics():
+    uid = g.user.uid
+    article_num = Article.query.filter_by(user_id=uid).count()
+
+    stars = ArticleStar.query.filter_by(user_id=uid).all()
+    stars_list = [star.type_id for star in stars]
+    article_star_num = Article.query.filter(Article.id.in_(stars_list)).count()
+
+    likes = ArticleLike.query.filter_by(user_id=uid).all()
+    likes_list = [like.type_id for like in likes]
+    article_like_num = Article.query.filter(Article.id.in_(likes_list)).count()
+
+    data = {
+        'article_num': article_num,
+        'article_star_num': article_star_num,
+        'article_like_num': article_like_num
+    }
+    return restful_json(data)
 
 
 @api.route('/<int:uid>', methods=['GET'])

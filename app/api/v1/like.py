@@ -32,6 +32,10 @@ def get_article_like(aid):
 @api.route('/articles/user', methods=['GET'])
 @auth.login_required
 def get_user_articles_likes():
+    '''
+    给定文章列表中，当前用户点赞过的文章
+    :return: [{ type: 'article', type_id: int}, ...]
+    '''
     list = request.values.get('list', '')
     result = []
 
@@ -49,6 +53,10 @@ def get_user_articles_likes():
 @api.route('/article/comments/user/<int:aid>', methods=['GET'])
 @auth.login_required
 def get_user_article_comments_likes(aid):
+    '''
+   给定一篇文章，当前用户对这篇文章下所有点赞过的评论
+   :return: [{ type: 'comment', type_id: int}, ...]
+   '''
     comments_likes = CommentLike.query.join(
         Comment,
         CommentLike.type_id == Comment.id
@@ -65,6 +73,10 @@ def get_user_article_comments_likes(aid):
 @api.route('/article/replies/user/<int:aid>', methods=['GET'])
 @auth.login_required
 def get_user_article_replies_likes(aid):
+    '''
+    给定一篇文章，当前用户对这篇文章下所有点赞过的回复
+    :return: [{ type: 'reply', type_id: int}, ...]
+    '''
     replies_likes = ReplyLike.query.join(
         Reply,
         ReplyLike.type_id == Reply.id
@@ -106,6 +118,10 @@ def submit_article_like():
 @api.route('/comments/user', methods=['GET'])
 @auth.login_required
 def get_user_comments_likes():
+    '''
+    给定评论列表中，当前用户点赞过的评论
+    :return: [{ type: 'comment', type_id: int}, ...]
+    '''
     list = request.values.get('list', '')
     result = []
 
@@ -160,6 +176,10 @@ def submit_comment_like():
 @api.route('/replies/user', methods=['GET'])
 @auth.login_required
 def get_user_replies_likes():
+    '''
+    给定回复列表中，当前用户点赞过的回复
+    :return: [{ type: 'reply', type_id: int}, ...]
+    '''
     list = request.values.get('list', '')
     result = []
 

@@ -30,6 +30,10 @@ def get_article_star(aid):
 @api.route('/articles/user', methods=['GET'])
 @auth.login_required
 def get_user_articles_likes():
+    '''
+    给定文章列表中，当前用户收藏过的文章
+    :return: [{ type: 'article', type_id: int}, ...]
+    '''
     list = request.values.get('list', '')
     result = []
 

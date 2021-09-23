@@ -57,6 +57,98 @@ def article_list():
     return restful_json(data)
 
 
+@api.route('/user', methods=['GET'])
+@auth.login_required
+def get_user_articles():
+    '''
+    当前用户发表的文章列表
+    :return: []
+    '''
+    page_index = int(request.args.get('page', 1))
+    page_size = int(request.args.get('limit', 10))
+    order = int(request.args.get('order', 0))
+
+    articles = Article.query.filter_by(user_id=g.user.uid)
+
+    if order and order == 1:
+        articles = articles.order_by(Article.create_time.asc())
+    else:
+        articles = articles.order_by(Article.create_time.desc())
+
+    total = articles.count()
+    articles = articles.limit(page_size).offset((page_index - 1) * page_size).all()
+
+    data = {
+        "total": total,
+        "data": articles
+    }
+    return restful_json(data)
+
+
+@api.route('/user/star', methods=['GET'])
+@auth.login_required
+def get_user_stared_articles():
+    '''
+    当前用户收藏的文章列表
+    :return: []
+    '''
+    page_index = int(request.args.get('page', 1))
+    page_size = int(request.args.get('limit', 10))
+    order = int(request.args.get('order', 0))
+
+    stars = ArticleStar.query.filter_by(user_id=g.user.uid).all()
+
+    list = [star.type_id for star in stars]
+
+    articles = Article.query.filter(Article.id.in_(list))
+
+    if order and order == 1:
+        articles = articles.order_by(Article.create_time.asc())
+    else:
+        articles = articles.order_by(Article.create_time.desc())
+
+    total = articles.count()
+    articles = articles.limit(page_size).offset((page_index - 1) * page_size).all()
+
+    data = {
+        "total": total,
+        "data": articles
+    }
+    return restful_json(data)
+
+
+@api.route('/user/like', methods=['GET'])
+@auth.login_required
+def get_user_liked_articles():
+    '''
+    当前用户点赞的文章列表
+    :return: []
+    '''
+    page_index = int(request.args.get('page', 1))
+    page_size = int(request.args.get('limit', 10))
+    order = int(request.args.get('order', 0))
+
+    likes = ArticleLike.query.filter_by(user_id=g.user.uid).all()
+
+    list = [like.type_id for like in likes]
+
+    articles = Article.query.filter(Article.id.in_(list))
+
+    if order and order == 1:
+        articles = articles.order_by(Article.create_time.asc())
+    else:
+        articles = articles.order_by(Article.create_time.desc())
+
+    total = articles.count()
+    articles = articles.limit(page_size).offset((page_index - 1) * page_size).all()
+
+    data = {
+        "total": total,
+        "data": articles
+    }
+    return restful_json(data)
+
+
 @api.route('/<int:aid>', methods=['GET'])
 def get_article(aid):
     article = Article.query.filter_by(id=aid).first_or_404()
