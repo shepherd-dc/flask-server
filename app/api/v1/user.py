@@ -31,6 +31,25 @@ def get_user():
     return jsonify(user)
 
 
+@api.route('/info', methods=['GET'])
+@auth.login_required
+def get_current_user_info():
+    user = User.query.filter_by(id=g.user.uid).first_or_404()
+    user.hide('id', 'auth', 'status', 'create_time')
+    return restful_json(user)
+
+
+@api.route('/info/edit', methods=['PUT'])
+@auth.login_required
+def edit_current_user_info():
+    data = request.get_json()
+    id = g.user.uid
+    with db.auto_commit():
+        user = User.query.get(id)
+        user.email = data['email']
+    return Success()
+
+
 @api.route('/statistics', methods=['GET'])
 @auth.login_required
 def get_user_statistics():
@@ -129,7 +148,7 @@ def get_nickname():
 
 @api.route('/add', methods=['POST'])
 @auth.login_required
-def publish_article():
+def super_add_user():
     form = UserForm().validate_for_api()
     email = PyDES3().decrypt(form.email.data)
     nickname = PyDES3().decrypt(form.nickname.data)
@@ -164,7 +183,7 @@ def publish_article():
 
 @api.route('/edit', methods=['PUT'])
 @auth.login_required
-def edit_article():
+def super_edit_user():
     data = request.get_json()
     id = data['id']
     with db.auto_commit():
@@ -176,7 +195,7 @@ def edit_article():
 
 @api.route('/delete', methods=['POST'])
 @auth.login_required
-def delete_user():
+def super_delete_user():
     data = request.get_json('id')
     user = User.query.filter_by(id=data['id']).first_or_404()
     with db.auto_commit():
@@ -186,7 +205,7 @@ def delete_user():
 
 @api.route('/delete', methods=['DELETE'])
 @auth.login_required
-def super_delete_user():
+def super_hard_delete_user():
     data = request.get_json('id')
     user = User.query.filter_by(id=data['id']).first_or_404()
     with db.auto_commit():
