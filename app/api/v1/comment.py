@@ -138,6 +138,7 @@ def submit_comment():
         comment.create_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
         comment.from_uid = g.user.uid
         comment.from_name = g.user.nickname
+        comment.from_avatar = g.user.avatar
         db.session.add(comment)
 
         article = Article.query.get(topic_id)
@@ -161,6 +162,7 @@ def submit_reply():
         reply.to_name = form.to_name.data
         reply.from_uid = g.user.uid
         reply.from_name = g.user.nickname
+        reply.from_avatar = g.user.avatar
         reply.comment_id = form.comment_id.data
         reply.topic_id = form.topic_id.data
         reply.topic_type = form.topic_type.data

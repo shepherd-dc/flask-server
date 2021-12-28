@@ -47,6 +47,7 @@ def edit_current_user_info():
     with db.auto_commit():
         user = User.query.get(id)
         user.email = data['email']
+        user.avatar = data['avatar']
     return Success()
 
 

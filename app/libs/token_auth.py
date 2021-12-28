@@ -10,7 +10,7 @@ from app.libs.scope import is_in_scope
 
 auth = HTTPBasicAuth()
 
-User = namedtuple('User', ['uid', 'nickname', 'ac_type', 'scope'])
+User = namedtuple('User', ['uid', 'nickname', 'avatar', 'ac_type', 'scope'])
 
 
 @auth.verify_password
@@ -34,6 +34,7 @@ def verify_auth_token(token):
 
     uid = data['uid']
     nickname = data['nickname']
+    avatar = data['avatar']
     ac_type = data['type']
     scope = data['scope']
 
@@ -41,7 +42,7 @@ def verify_auth_token(token):
     if not allow:
         raise Forbidden()
 
-    return User(uid, nickname, ac_type, scope)
+    return User(uid, nickname, avatar, ac_type, scope)
 
 
 def decode_token_uid(token):

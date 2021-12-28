@@ -12,9 +12,10 @@ class Comment(Base):
     user = relationship('User')
     from_uid = Column(Integer, ForeignKey('user.id'))
     from_name = Column(String(30))
+    from_avatar = Column(String(256))
     replies = relationship('Reply', backref='comment')
     likes = Column(Integer, nullable=False, default=0)
 
     @orm.reconstructor
     def __init__(self):
-        self.fields = ['id', 'topic_id', 'topic_type', 'content', 'from_name', 'from_uid', 'replies', 'create_time', 'likes']
+        self.fields = ['id', 'topic_id', 'topic_type', 'content', 'from_uid', 'from_name', 'from_avatar', 'replies', 'create_time', 'likes']

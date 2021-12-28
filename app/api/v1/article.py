@@ -205,6 +205,8 @@ def publish_article():
             else:
                 article.user_id = g.user.uid
                 article.user_name = g.user.nickname
+                article.user_avatar = g.user.avatar
+                print('g.user', g.user)
 
             if create_time:
                 article.create_time = create_time

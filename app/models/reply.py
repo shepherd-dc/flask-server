@@ -15,6 +15,7 @@ class Reply(Base):
     user = relationship('User')
     from_uid = Column(Integer, ForeignKey('user.id'))
     from_name = Column(String(30))
+    from_avatar = Column(String(256))
     to_uid = Column(Integer, nullable=False)
     to_name = Column(String(30))
     likes = Column(Integer, nullable=False, default=0)
@@ -22,4 +23,4 @@ class Reply(Base):
     @orm.reconstructor
     def __init__(self):
         self.fields = ['id', 'topic_id', 'topic_type', 'comment_id', 'reply_id', 'reply_type', 'content',
-                       'from_name', 'from_uid', 'to_uid', 'to_name', 'create_time', 'likes']
+                       'from_uid', 'from_name', 'from_avatar', 'to_uid', 'to_name', 'create_time', 'likes']

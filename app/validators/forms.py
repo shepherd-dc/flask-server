@@ -107,6 +107,7 @@ class UserForm(BaseForm):
         # Email(message='邮箱格式不正确')
     ])
     password = StringField(validators=[DataRequired()])
+    avatar = StringField()
     create_time = StringField()
     status = IntegerField()
 

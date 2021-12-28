@@ -31,7 +31,8 @@ def upload_image():
 
         data = {
             'filename': filename,
-            'url': '/v1/upload/image'
+            'url': '/v1/upload/image',
+            'path': '/v1/upload/image/' + filename
         }
 
         return restful_json(data), 201

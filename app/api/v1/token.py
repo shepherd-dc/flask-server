@@ -26,12 +26,13 @@ def grant_token():
         ClientTypeEnum.USER_EMAIL: User.verify
     }
     identity = promise[form.type.data](account, secret)
-
+    ac_type = form.type.data
     expiration = current_app.config['TOKEN_EXPIRATION']
-    token = generate_auth_token(identity['uid'], identity['nickname'], form.type.data, identity['scope'], expiration)
+    token = generate_auth_token(identity, ac_type, expiration)
     t = {
         'token': token.decode('ascii'),
-        'nickname': account
+        'nickname': account,
+        'avatar': identity['avatar']
     }
     return restful_json(t), 201
 
@@ -73,6 +74,7 @@ def get_token_info():
     r = {
         # 'uid': data[0]['uid'],
         'nickname': PyDES3().encrypt(data[0]['nickname']),
+        'avatar': PyDES3().encrypt(data[0]['avatar']),
         'scope': PyDES3().encrypt(data[0]['scope']),
         'create_at': PyDES3().encrypt(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(data[1]['iat']))),
         'expire_in': PyDES3().encrypt(datetime.datetime.utcfromtimestamp(data[1]['exp']).strftime('%Y-%m-%d %H:%M:%S'))
@@ -80,11 +82,16 @@ def get_token_info():
     return restful_json(r)
 
 
-def generate_auth_token(uid, nickname, ac_type, scope=None, expiration=7200):
+def generate_auth_token(identity, ac_type, expiration=7200):
     s = Serializer(current_app.config['SECRET_KEY'], expires_in=expiration)
+    uid = identity['uid']
+    nickname = identity['nickname']
+    avatar = identity['avatar']
+    scope = identity['scope']
     return s.dumps({
         'uid': uid,
         'nickname': nickname,
-        'type': ac_type.value,
-        'scope': scope
+        'avatar': avatar,
+        'scope': scope,
+        'type': ac_type.value
     })

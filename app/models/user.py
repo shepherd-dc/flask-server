@@ -9,12 +9,13 @@ class User(Base):
     id = Column(Integer, primary_key=True)
     email = Column(String(24), unique=True, nullable=False)
     nickname = Column(String(24), unique=True)
+    avatar = Column(String(256))
     auth = Column(SmallInteger, default=1)
     _password = Column('password', String(100))
 
     @orm.reconstructor
     def __init__(self):
-        self.fields = ['id', 'email', 'nickname', 'auth', 'status', 'create_time']
+        self.fields = ['id', 'email', 'nickname', 'avatar', 'auth', 'status', 'create_time']
 
     @property
     def password(self):
@@ -41,6 +42,7 @@ class User(Base):
         return {
             'uid': user.id,
             'nickname': user.nickname,
+            'avatar': user.avatar,
             'scope': scope
         }
 
